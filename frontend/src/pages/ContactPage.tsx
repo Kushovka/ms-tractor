@@ -1,5 +1,6 @@
 import { FaArrowRight, FaClock, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { LeadForm } from '../components/LeadForm'
+import { HeroScrollCue } from '../components/HeroScrollCue'
 import { Seo } from '../components/Seo'
 import { business } from '../data/business'
 import { trackContactCta } from '../utils/ctaTracking'
@@ -26,6 +27,7 @@ export const ContactPage = () => (
           <LeadForm title="Send Message" variant="contact" markRequiredNameFields phonePlaceholder="Phone number*" messagePlaceholder="Tell us a little more..." inquiryOptions={['Equipment questions', 'Parts & service', 'Delivery', 'Schedule a visit', 'Other']} />
         </div>
       </div>
+      <HeroScrollCue target="contact-details" label="Scroll to contact information" />
     </section>
 
     <section id="contact-details" className="contact-main" aria-label="Contact information">

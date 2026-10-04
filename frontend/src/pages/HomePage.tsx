@@ -14,7 +14,7 @@ const StoreSummary = () => (
     <div className="store-summary__inner">
       <div className="store-summary__item">
         <div className="store-summary__item-heading"><FaClock aria-hidden="true" className="store-summary__icon" /><h2>Hours</h2></div>
-        <div className="store-summary__item-content"><p>Mon–Fri: 8:00 AM–5:00 PM<br />Sat: 8:00 AM–12:00 PM<br />Sun: Closed</p></div>
+        <div className="store-summary__item-content"><p>Mon-Fri: 8:00 AM - 5:00 PM<br />Sat: 8:00 AM - 12:00 PM<br />Sun: Closed</p></div>
       </div>
       <a href={business.phoneHref} className="store-summary__item store-summary__item--link" onClick={() => trackContactCta('phone_click', 'Home Summary Call')}>
         <div className="store-summary__item-heading"><FaPhoneAlt aria-hidden="true" className="store-summary__icon" /><h2>Call Us</h2></div>

@@ -1,5 +1,6 @@
 import { FaArrowRight, FaCalendarAlt, FaClock, FaPhoneAlt, FaShieldAlt, FaTruck } from 'react-icons/fa'
 import { Link } from 'react-router'
+import { HeroScrollCue } from '../components/HeroScrollCue'
 import { Seo } from '../components/Seo'
 import { business } from '../data/business'
 import { trackContactCta } from '../utils/ctaTracking'
@@ -20,8 +21,9 @@ export const DeliveryPage = () => (
           </a>
         </div>
       </div>
+      <HeroScrollCue target="delivery-services" label="Scroll to delivery services" />
     </section>
-    <section className="delivery-services" aria-labelledby="delivery-services-title">
+    <section id="delivery-services" className="delivery-services" aria-labelledby="delivery-services-title">
       <div className="delivery-services-top">
         <div className="delivery-services-copy">
           <h2 id="delivery-services-title">Built Around<br />Your Operation</h2>

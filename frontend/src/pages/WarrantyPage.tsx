@@ -1,4 +1,5 @@
 import { FaArrowRight, FaBan, FaPaintBrush, FaTint, FaWrench } from 'react-icons/fa'
+import { HeroScrollCue } from '../components/HeroScrollCue'
 import { LeadForm } from '../components/LeadForm'
 import { Seo } from '../components/Seo'
 import { business } from '../data/business'
@@ -12,17 +13,18 @@ const exclusions = [
 
 export const WarrantyPage = () => (
   <>
-    <Seo title="Warranty information" description={`Review limited warranty information and contact ${business.name} for coverage details on a specific vehicle.`} />
+    <Seo title="Warranty information" description={`Review limited warranty information and contact ${business.name} for coverage details on a specific tractor or piece of equipment.`} />
     <main className="warranty-page">
       <section className="warranty-hero" aria-labelledby="warranty-title">
         <div className="warranty-hero-copy">
-          <h1 id="warranty-title">90-Day / 3,000-Mile<br />Limited Warranty</h1>
-          <p className="warranty-hero-lead">In addition to our return policy, qualifying vehicles include a limited warranty for major mechanical components. Coverage begins at delivery and ends after 90 calendar days or 3,000 additional miles, whichever comes first.</p>
+          <h1 id="warranty-title">90-Day / 300-Hour<br />Limited Warranty</h1>
+          <p className="warranty-hero-lead">In addition to our return policy, qualifying tractors and equipment include a limited warranty for major mechanical components. Coverage begins at delivery and ends after 90 calendar days or 300 operating hours, whichever comes first.</p>
           <div className="warranty-hero-actions">
             <a className="delivery-button delivery-button--primary warranty-ask-button" href="/contact">Ask About Coverage <FaArrowRight aria-hidden="true" /></a>
             <a className="delivery-button delivery-button--phone warranty-call-button" href={business.phoneHref}>Call {business.phone} <FaArrowRight aria-hidden="true" /></a>
           </div>
         </div>
+        <HeroScrollCue target="warranty-reference-section" label="Scroll to warranty details" />
       </section>
 
       <section id="warranty-reference-section" className="warranty-reference-section" aria-label="Warranty limitations and coverage options">

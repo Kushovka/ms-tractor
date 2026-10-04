@@ -98,7 +98,7 @@ export const InventoryPage = () => {
     </button>
     <div className="inventory-filters__heading hidden items-center justify-between border-b pb-3 lg:flex"><h2>Refine Results</h2><button type="button" onClick={resetFilters}>Clear All</button></div>
     <div id="inventory-filters" className={`${filtersOpen ? 'block' : 'hidden'} lg:block`}>
-    <fieldset className="inventory-filter-group"><legend>Category</legend>{bodyTypes.map((item) => <label key={item}><input type="radio" name="category" checked={bodyType === item} onChange={() => filterChange(setBodyType, item)} /><span>{item}</span><small>{categoryCounts?.[item] ?? '—'}</small></label>)}</fieldset>
+    <fieldset className="inventory-filter-group"><legend>Category</legend>{bodyTypes.map((item) => <label key={item}><input type="radio" name="category" checked={bodyType === item} onChange={() => filterChange(setBodyType, item)} /><span>{item}</span><small>{categoryCounts?.[item] ?? '-'}</small></label>)}</fieldset>
     {conditions.length ? <fieldset className="inventory-filter-group"><legend>Condition</legend>{conditions.map((item) => <label key={item}><input type="radio" name="condition" checked={condition === item} onChange={() => filterChange(setCondition, item)} /><span>{item}</span></label>)}</fieldset> : null}
     {brands.length ? <fieldset className="inventory-filter-group"><legend>Brand</legend>{brands.map((item) => <label key={item}><input type="radio" name="brand" checked={make === item} onChange={() => { filterChange(setBrand, item); setModel('') }} /><span>{item}</span></label>)}</fieldset> : null}
     <div className="inventory-filter-group"><span className="inventory-filter-group__legend">Price</span><div className="inventory-filter-range"><label><span className="sr-only">Minimum price</span><input type="number" min="0" placeholder="Min Price" value={numberValue(priceMin)} onChange={(event) => filterChange(setPriceMin, toNumber(event.target.value))} /></label><label><span className="sr-only">Maximum price</span><input type="number" min="0" placeholder="Max Price" value={numberValue(priceMax)} onChange={(event) => filterChange(setPriceMax, toNumber(event.target.value))} /></label></div></div>
@@ -113,8 +113,8 @@ export const InventoryPage = () => {
     <section className="inventory-page px-5 pb-10 pt-5 sm:px-8 sm:pt-6 lg:px-[clamp(24px,3.9vw,58px)] lg:pt-2"><div className="mx-auto w-full max-w-[1680px]">
       <header className="inventory-intro"><h1>Current Inventory</h1><p>Browse available equipment with listing details and current prices.</p><img className="inventory-intro__art" src="/images/inventory-farm-panorama-transparent.webp" alt="" aria-hidden="true" /></header>
       <nav aria-label="Equipment categories" className="inventory-category-tabs">
-        <button type="button" onClick={() => { filterChange(setBodyType, ''); setBrand(''); setModel('') }} className={!bodyType ? 'is-active' : ''}>All Equipment <span>{categoryCounts?.all ?? '—'}</span></button>
-        {bodyTypes.map((type) => <button key={type} type="button" onClick={() => { filterChange(setBodyType, type); setBrand(''); setModel('') }} className={bodyType === type ? 'is-active' : ''}>{type}<span>{categoryCounts?.[type] ?? '—'}</span></button>)}
+        <button type="button" onClick={() => { filterChange(setBodyType, ''); setBrand(''); setModel('') }} className={!bodyType ? 'is-active' : ''}>All Equipment <span>{categoryCounts?.all ?? '-'}</span></button>
+        {bodyTypes.map((type) => <button key={type} type="button" onClick={() => { filterChange(setBodyType, type); setBrand(''); setModel('') }} className={bodyType === type ? 'is-active' : ''}>{type}<span>{categoryCounts?.[type] ?? '-'}</span></button>)}
       </nav>
       <div className="inventory-workspace">
       <div className="hidden lg:block">{filters}</div>

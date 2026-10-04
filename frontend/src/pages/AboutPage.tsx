@@ -1,5 +1,6 @@
 import { FaArrowRight, FaHandshake, FaMapMarkerAlt, FaUsers, FaCog } from 'react-icons/fa'
 import { Link } from 'react-router'
+import { HeroScrollCue } from '../components/HeroScrollCue'
 import { Seo } from '../components/Seo'
 import { business } from '../data/business'
 
@@ -19,10 +20,11 @@ export const AboutPage = () => (
         <p>M&amp;S Tractor &amp; Equipment is a family-owned business based in Shreveport, Louisiana. We’re here to help farmers, landowners, and contractors get the equipment, parts, and service they need to keep moving.</p>
         <div className="about-actions"><Link className="about-button about-button--red" to="/inventory">Our inventory <FaArrowRight /></Link></div>
       </div>
+      <HeroScrollCue target="about-story" label="Scroll to our story" />
     </section>
     <section id="about-story" className="about-story">
       <div className="about-story-copy"><h2>Rooted in<br />North Louisiana</h2>
-        <p>M&amp;S Tractor &amp; Equipment was founded with a simple goal — to provide reliable equipment, honest service, and real support to the people who work the land. What started as a local business has grown into a trusted dealer serving customers across Louisiana, East Texas, and beyond.</p>
+        <p>M&amp;S Tractor &amp; Equipment was founded with a simple goal - to provide reliable equipment, honest service, and real support to the people who work the land. What started as a local business has grown into a trusted dealer serving customers across Louisiana, East Texas, and beyond.</p>
         <p>We understand the challenges that come with farming, land management, and construction, because we live and work in the same communities as our customers. That’s why we focus on building long-term relationships and being a partner you can count on.</p>
       </div>
       <img src="/images/about-north-louisiana.webp" alt="Orange utility tractor beside a rural field in North Louisiana at sunset" />

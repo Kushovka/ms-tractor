@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { FaCamera, FaChevronLeft, FaChevronRight, FaExpand, FaImages, FaSearchPlus, FaTimes } from 'react-icons/fa'
+import { FaCamera, FaChevronLeft, FaChevronRight, FaExpand, FaImages, FaSearchPlus, FaSpinner, FaTimes } from 'react-icons/fa'
 import { listVehicleImages } from '../api/vehicles'
 
 type VehicleGalleryProps = {
@@ -18,7 +18,7 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
   const [active, setActive] = useState(0)
   const [loadedImages, setLoadedImages] = useState(images)
   const [totalImages, setTotalImages] = useState(imagesTotal || images.length)
-  const [imageLoading, setImageLoading] = useState(false)
+  const [imageLoading, setImageLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [lightbox, setLightbox] = useState(false)
   const [zoomed, setZoomed] = useState(false)
@@ -28,6 +28,7 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
   const currentImage = loadedImages[active] ?? loadedImages[0]
   const previewStart = Math.max(0, Math.min(active - 2, loadedImages.length - 6))
   const previewImages = loadedImages.map((image, index) => ({ image, index })).slice(previewStart, previewStart + 6)
+  const navigationBlocked = loadingMore || imageLoading
   const photoGridTarget = document.getElementById('vehicle-photos-grid')
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
     setActive(0)
     setLoadedImages(images)
     setTotalImages(imagesTotal || images.length)
-    setImageLoading(false)
+    setImageLoading(true)
     setLoadingMore(false)
     setZoomed(false)
   }, [images, imagesTotal, slug])
@@ -73,6 +74,7 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
   }, [images, imagesTotal, slug])
 
   const goTo = useCallback(async (index: number) => {
+    if (loadingMore || imageLoading) return
     const nextIndex = index < 0 ? totalImages - 1 : index >= totalImages ? 0 : index
     if (nextIndex < loadedImages.length) {
       setImageLoading(loadedImages[nextIndex] !== loadedImages[active])
@@ -96,7 +98,7 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
     } finally {
       setLoadingMore(false)
     }
-  }, [active, loadedImages, loadingMore, slug, totalImages])
+  }, [active, imageLoading, loadedImages, loadingMore, slug, totalImages])
 
   const previous = useCallback(() => { void goTo(active - 1) }, [active, goTo])
   const next = useCallback(() => { void goTo(active + 1) }, [active, goTo])
@@ -124,10 +126,11 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
       <div className="vehicle-gallery__stage group relative row-start-1 min-h-0 overflow-hidden bg-[var(--color-background)] sm:row-span-2">
         <button aria-label="Open main vehicle photo" className="block h-full w-full" onClick={() => setLightbox(true)} type="button">
           <img src={currentImage} alt={title} className={`h-full w-full object-cover transition-opacity duration-200 ${imageLoading ? 'opacity-60' : 'opacity-100'}`} onLoad={() => setImageLoading(false)} onError={() => setImageLoading(false)} />
+          {imageLoading ? <span role="status" aria-label="Loading photo" className="pointer-events-none absolute left-1/2 top-1/2 grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-black/55 text-sm text-white"><FaSpinner aria-hidden="true" className="animate-spin" /></span> : null}
         </button>
         {loadedImages.length > 1 ? <>
-          <button aria-label="Previous image" className="vehicle-gallery__nav vehicle-gallery__nav--previous absolute left-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-md bg-black/75 text-sm text-white transition hover:bg-black disabled:opacity-40" disabled={loadingMore} onClick={previous} type="button"><FaChevronLeft /></button>
-          <button aria-label="Next image" className="vehicle-gallery__nav vehicle-gallery__nav--next absolute right-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-md bg-black/75 text-sm text-white transition hover:bg-black disabled:opacity-40" disabled={loadingMore} onClick={next} type="button"><FaChevronRight /></button>
+          <button aria-label="Previous image" className="vehicle-gallery__nav vehicle-gallery__nav--previous absolute left-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-md bg-black/75 text-sm text-white transition hover:bg-black disabled:cursor-wait disabled:opacity-40" disabled={navigationBlocked} onClick={previous} type="button"><FaChevronLeft /></button>
+          <button aria-label="Next image" className="vehicle-gallery__nav vehicle-gallery__nav--next absolute right-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-md bg-black/75 text-sm text-white transition hover:bg-black disabled:cursor-wait disabled:opacity-40" disabled={navigationBlocked} onClick={next} type="button"><FaChevronRight /></button>
         </> : null}
         <span className="vehicle-gallery__counter absolute bottom-3 left-3 inline-flex items-center gap-2 rounded-md bg-black/75 px-3 py-2 text-sm font-semibold text-white sm:bottom-4 sm:left-4"><FaCamera aria-hidden="true" />{active + 1} / {totalImages}</span>
         {loadingMore ? <span className="absolute bottom-3 left-28 bg-black/75 px-3 py-2 text-xs text-white sm:bottom-4 sm:left-32">Loading photos…</span> : null}
@@ -145,11 +148,11 @@ export const VehicleGallery = ({ images, imagesTotal, slug, title, onShowPhotos,
     {lightbox ? <div className="fixed inset-0 z-[70] bg-black/95 p-4" onClick={() => setLightbox(false)}>
       <button aria-label="Close gallery" className="absolute right-5 top-5 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-white transition hover:bg-white/20" onClick={() => setLightbox(false)} type="button"><FaTimes /></button>
       {totalImages > 1 ? <>
-        <button aria-label="Previous image" className="absolute left-5 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-white transition hover:bg-white/20 disabled:opacity-35" disabled={loadingMore} onClick={(event) => { event.stopPropagation(); previous() }} type="button"><FaChevronLeft /></button>
-        <button aria-label="Next image" className="absolute right-5 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-white transition hover:bg-white/20 disabled:opacity-35" disabled={loadingMore} onClick={(event) => { event.stopPropagation(); next() }} type="button"><FaChevronRight /></button>
+        <button aria-label="Previous image" className="absolute left-5 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-white transition hover:bg-white/20 disabled:cursor-wait disabled:opacity-35" disabled={navigationBlocked} onClick={(event) => { event.stopPropagation(); previous() }} type="button"><FaChevronLeft /></button>
+        <button aria-label="Next image" className="absolute right-5 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-white transition hover:bg-white/20 disabled:cursor-wait disabled:opacity-35" disabled={navigationBlocked} onClick={(event) => { event.stopPropagation(); next() }} type="button"><FaChevronRight /></button>
       </> : null}
       <button aria-label={zoomed ? 'Zoom out' : 'Zoom in'} className="absolute bottom-5 left-1/2 z-10 grid h-10 w-10 -translate-x-1/2 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-white transition hover:bg-white/20" onClick={(event) => { event.stopPropagation(); setZoomed((value) => !value) }} type="button"><FaSearchPlus className={zoomed ? 'scale-90 opacity-70' : ''} /></button>
-      <div className="flex h-full items-center justify-center overflow-auto px-8 py-12 sm:px-12"><img src={currentImage} alt={title} className={`${zoomed ? 'max-h-none max-w-none scale-150' : 'max-h-[84vh] w-full max-w-6xl'} object-contain transition duration-200 ${imageLoading ? 'opacity-55' : 'opacity-100'}`} onLoad={() => setImageLoading(false)} onError={() => setImageLoading(false)} onClick={(event) => { event.stopPropagation(); setZoomed((value) => !value) }} /></div>
+      <div className="relative flex h-full items-center justify-center overflow-auto px-8 py-12 sm:px-12"><img src={currentImage} alt={title} className={`${zoomed ? 'max-h-none max-w-none scale-150' : 'max-h-[84vh] w-full max-w-6xl'} object-contain transition duration-200 ${imageLoading ? 'opacity-55' : 'opacity-100'}`} onLoad={() => setImageLoading(false)} onError={() => setImageLoading(false)} onClick={(event) => { event.stopPropagation(); setZoomed((value) => !value) }} />{imageLoading ? <span role="status" aria-label="Loading photo" className="pointer-events-none absolute left-1/2 top-1/2 grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-sm text-white"><FaSpinner aria-hidden="true" className="animate-spin" /></span> : null}</div>
       <span className="absolute bottom-5 right-5 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs text-white">{active + 1} / {totalImages}</span>
     </div> : null}
   </div>

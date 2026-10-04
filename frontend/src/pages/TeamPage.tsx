@@ -1,14 +1,23 @@
+import { FaArrowRight } from 'react-icons/fa'
 import { Seo } from '../components/Seo'
+import { HeroScrollCue } from '../components/HeroScrollCue'
 import { teamPortraits } from '../data/team'
 
 export const TeamPage = () => (
   <main className="team-page">
     <Seo title="Our Team" description="Meet the people who make M & S Tractor & Equipment a friendly place to find and service a vehicle." />
     <section className="about-hero team-hero" aria-labelledby="team-title">
-      <div className="about-hero-copy">
+      <div className="about-hero-copy team-hero-copy">
         <h1 id="team-title">Meet the Team.</h1>
         <p>Meet the team behind M &amp; S Tractor &amp; Equipment. We can help with your equipment, parts, and service questions.</p>
+        <a className="about-button about-button--red team-hero-cta" href="#team-gallery">Meet the Team <FaArrowRight aria-hidden="true" /></a>
       </div>
+      <div className="team-hero-specialties" aria-label="How our team can help">
+        <span>Sales</span>
+        <span>Parts</span>
+        <span>Service</span>
+      </div>
+      <HeroScrollCue target="team-gallery" label="Scroll to our team" />
     </section>
     <section id="team-gallery" className="team-gallery mt-8 px-5 py-8 sm:py-12 lg:mt-10 lg:py-16" aria-label="Our team">
         <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-x-4 gap-y-7 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-12">

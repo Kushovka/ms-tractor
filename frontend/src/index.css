@@ -130,9 +130,10 @@
 .equipment-inventory__heading::after { height: 1px; flex: 1; background: var(--color-border); content: ''; }
 .equipment-inventory__heading h2 { order: -1; }
 .equipment-inventory__heading h2 { margin: 0; color: var(--color-primary); font-family: var(--font-heading),sans-serif!important; font-size: clamp(27px,2.45vw,36px); font-weight: 700; line-height: 1; text-transform: uppercase; }
-.equipment-inventory__controls { display: flex; order: 1; gap: 8px; }
-.equipment-inventory__controls button { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border: 1px solid var(--color-primary); background: var(--color-primary); color: white; cursor: pointer; transition: background-color .18s ease, color .18s ease; }
-.equipment-inventory__controls button:hover { background: var(--color-secondary); }
+.equipment-inventory__controls { display: flex; order: 1; gap: 12px; }
+.equipment-inventory__controls button { display: grid; width: 56px; height: 50px; flex: 0 0 56px; place-items: center; border: 2px solid var(--color-primary); border-radius: 10px; background: transparent; color: var(--color-primary); cursor: pointer; font-size: 25px; transition: background-color .18s ease, color .18s ease, transform .18s ease; }
+.equipment-inventory__controls button:hover { background: var(--color-primary); color: white; transform: translateY(-1px); }
+.equipment-inventory__controls button:active { transform: translateY(0); }
 .equipment-inventory__controls button:focus-visible, .equipment-inventory__view-all:focus-visible { outline: 3px solid var(--color-accent-dark); outline-offset: 3px; }
 .equipment-inventory__carousel { display: grid; grid-auto-columns: minmax(0,calc((100% - 36px)/3)); grid-auto-flow: column; gap: 18px; align-items: stretch; overflow-x: auto; overscroll-behavior-x: contain; margin-top: 22px; padding: 1px 2px 8px; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
 .equipment-inventory__carousel--desktop { display: none; }
@@ -148,6 +149,24 @@
 @media (prefers-reduced-motion: reduce) { .equipment-inventory__carousel { scroll-behavior: auto; } }
 .equipment-inventory__empty { display: flex; width: 100%; min-height: 152px; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin: 18px auto 0; border-top: 1px solid var(--color-border); padding: 22px 0; }
 .equipment-inventory__empty p { margin: 0; color: var(--color-muted); font-size: 15px; }
+.related-equipment-carousel { position: relative; }
+.related-equipment-carousel__controls { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; }
+.related-equipment-carousel__side { display: none; }
+.related-equipment-carousel__controls button,
+.related-equipment-carousel__side { width: 56px; height: 50px; border: 2px solid var(--color-primary); border-radius: 10px; background: transparent; color: var(--color-primary); font-size: 25px; transition: background-color .18s ease, color .18s ease, transform .18s ease; }
+.related-equipment-carousel__controls button:hover,
+.related-equipment-carousel__side:hover { background: var(--color-primary); color: white; }
+@media (min-width: 1200px) {
+  .related-equipment-carousel__controls { display: none; }
+  .related-equipment-carousel__side { position: absolute; top: 50%; display: grid; transform: translateY(-50%); }
+  .related-equipment-carousel__side--previous { left: -68px; }
+  .related-equipment-carousel__side--next { right: -68px; }
+}
+@media (max-width: 640px) {
+  .related-equipment-carousel__controls { gap: 8px; }
+  .related-equipment-carousel__controls button,
+  .related-equipment-carousel__side { width: 48px; height: 42px; border-radius: 9px; font-size: 22px; }
+}
 .equipment-inventory__empty a { display: inline-flex; min-height: 44px; align-items: center; gap: 10px; background: var(--color-primary); padding: 0 17px; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; transition: background-color .18s ease; }
 .equipment-inventory__empty a:hover { background: var(--color-secondary); }
 .equipment-inventory__empty svg { color: var(--color-accent); }
@@ -361,8 +380,8 @@
   .equipment-inventory { padding: 21px 18px 32px; }
   .equipment-inventory__heading { align-items: flex-start; }
   .equipment-inventory__heading h2 { font-size: 27px; }
-  .equipment-inventory__controls { gap: 6px; }
-  .equipment-inventory__controls button { width: 40px; height: 40px; flex-basis: 40px; }
+  .equipment-inventory__controls { gap: 8px; }
+  .equipment-inventory__controls button { width: 48px; height: 42px; flex-basis: 48px; border-radius: 9px; font-size: 22px; }
   .equipment-inventory__carousel { grid-auto-columns: 100%; gap: 13px; margin-top: 18px; }
   .equipment-inventory__view-all { padding: 20px; }
   .equipment-inventory__carousel .equipment-card { padding: 10px; }
@@ -423,8 +442,12 @@
 @layer components {
   .team-page { overflow: hidden; background: #F3F0E8; color: #171A18; }
   .about-hero.team-hero { align-items:flex-start; background-image: linear-gradient(90deg,rgba(9,18,14,.82),rgba(9,18,14,.42) 55%,rgba(9,18,14,.08)),url('/images/ms-tractor-home-hero.webp'); background-position: center, center 53%; }
-  .team-hero .about-hero-copy { top:0; width:min(calc(100% - clamp(40px,6.4vw,132px)),1800px); margin-inline:auto; padding:36px 0; transform:none; }
+  .team-hero .about-hero-copy { top:0; display:block; width:min(calc(100% - clamp(40px,6.4vw,132px)),1800px); align-self:flex-start; margin-inline:auto; padding:36px 0; transform:none; }
   .team-hero .about-hero-copy h1 { max-width:1100px; margin-bottom:18px; font-size:clamp(6rem,10vw,12.5rem); line-height:.84; text-transform:uppercase; }
+  .team-hero-specialties { position:absolute; top:65%; right:clamp(40px,6.4vw,132px); width:min(30vw,540px); transform:translateY(-50%); border-top:1px solid rgb(245 244 239 / 48%); color:#FAF8F2; }
+  .team-hero-specialties span { display:block; border-bottom:1px solid rgb(245 244 239 / 48%); padding:15px 0 17px; font-family:var(--font-heading),Georgia,serif; font-size:clamp(42px,4vw,68px); font-weight:700; letter-spacing:-.02em; line-height:1; text-transform:uppercase; }
+  .team-hero .team-hero-cta { justify-self:start; min-height:56px; }
+  .team-hero .team-hero-cta svg { color:#C08A00; font-size:20px; }
   .about-page { overflow: hidden; background: #F3F0E8; color: #171A18; }
   .about-page p { font-family: var(--font-body),sans-serif!important; }
   .about-page h1,.about-page h2,.about-page h3 { font-family: var(--font-heading),Georgia,serif!important; text-transform: uppercase; }
@@ -470,13 +493,16 @@
   .about-gallery { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
   .about-gallery img { display:block; width:100%; aspect-ratio:1.18; object-fit:cover; }
   @media (max-width:800px) {
+    .team-hero { flex-direction:column; justify-content:center; }
     .about-hero-copy { width:calc(100% - 64px); }
     .about-hero-copy h1 { font-size:clamp(4rem,10vw,6rem); }
     .about-page .about-hero { min-height:max(500px,calc(100svh - 124px)); background-position:57% center; }
     .about-page .about-hero-copy { width:calc(100% - 48px); padding-block:38px; }
     .about-page .about-hero-copy h1 { font-size:clamp(4rem,10vw,6rem); }
     .about-page .about-hero-copy > p { max-width:520px; font-size:17px; }
-    .team-hero .about-hero-copy { width:calc(100% - 48px); padding-block:38px; }
+    .team-hero .about-hero-copy { width:calc(100% - 48px); padding-block:24px; }
+    .team-hero-specialties { position:relative; top:auto; right:auto; width:calc(100% - 48px); margin:0 auto; }
+    .team-hero-specialties span { font-size:clamp(36px,4vw,48px); }
     .team-hero .about-hero-copy h1 { font-size:clamp(4rem,10vw,6rem); }
     .team-hero .about-hero-copy > p { max-width:520px; font-size:17px; }
     .about-story,.about-values-grid { width:calc(100% - 56px); }
@@ -494,12 +520,16 @@
   }
   @media (max-width:600px) {
     .about-hero { min-height:max(500px, calc(100svh - 124px)); background-position:58% center; }
-    .team-hero { min-height:clamp(260px,40svh,300px); background-position:center,center top; background-size:100% 100%,auto 115%; }
+    .team-hero { min-height:max(460px,calc(100svh - 124px)); background-position:center,center top; background-size:100% 100%,auto 115%; }
     .about-hero-copy { top:0; width:calc(100% - 40px); padding:36px 0; }
     .about-hero-copy h1 { margin-bottom:14px; font-size:clamp(3.5rem,16vw,5.25rem); }
     .about-page .about-hero-copy { padding-block:38px; }
     .about-page .about-hero-copy h1 { font-size:clamp(4rem,10vw,6rem); }
     .team-hero .about-hero-copy h1 { font-size:clamp(3.5rem,16vw,5.25rem); }
+    .team-hero .about-hero-copy { display:block; }
+    .team-hero-specialties { margin-top:4px; }
+    .team-hero-specialties span { padding:9px 0 10px; font-size:31px; }
+    .team-hero .team-hero-cta { width:auto; min-height:52px; }
     .about-hero-copy > p { max-width:360px; margin-bottom:18px; font-size:16px; }
     .about-hero .about-button { width:100%; min-height:62px; padding-inline:17px; font-size:17px; }
     .about-hero .about-button svg { font-size:24px; }
@@ -550,6 +580,11 @@
   .delivery-button--phone { background: #F3F0E8; }
   .delivery-button--phone:hover { border-color: #AFA99D; background: #E7E2D8; }
   .delivery-button:focus-visible { outline: 3px solid #F0C23D; outline-offset: 3px; }
+  .hero-scroll-cue { position: absolute; z-index: 2; bottom: 20px; left: 50%; display: grid; width: 44px; height: 44px; place-items: center; transform: translateX(-50%); border: 0; border-radius: 0; background: transparent; color: #F5F4EF; }
+  .hero-scroll-cue:hover { background: transparent; }
+  .hero-scroll-cue:focus-visible { outline: 3px solid #F0C23D; outline-offset: 3px; }
+  .hero-scroll-cue svg { font-size: 24px; animation: hero-scroll-bounce 1.8s ease-in-out infinite; }
+  @keyframes hero-scroll-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
   @media (max-width: 800px) {
     .delivery-hero { background-image: linear-gradient(90deg, rgb(8 14 9 / 83%) 0%, rgb(8 14 9 / 71%) 43%, rgb(8 14 9 / 20%) 100%), url('/images/delivery-tractor-hauling.webp'); background-position: center, 57% center; }
     .delivery-hero-copy { width: min(100% - 48px, 1800px); }
@@ -574,6 +609,8 @@
     .delivery-hero h1 { margin-bottom: 14px; font-size: clamp(3.5rem, 16vw, 5.25rem); }
     .delivery-hero-description { max-width: 360px; font-size: 16px; }
   }
+  @media (max-width: 800px) { .hero-scroll-cue { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero-scroll-cue svg { animation: none; } }
   .delivery-services { width: 100%; padding: 44px 0 100px; background: #F3F0E8; }
   .delivery-services-top { display: grid; width: var(--delivery-content-width); grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); align-items: center; gap: clamp(32px, 5vw, 76px); margin-inline: auto; }
   .delivery-services-copy { max-width: 590px; }
@@ -1263,11 +1300,12 @@
   .equipment-detail-page .equipment-detail-listing-nav > span + span { font-size: 11px; }
   .vehicle-gallery__layout { height: 320px; grid-template-rows: minmax(0,1fr) 60px 44px; gap: 6px; padding: 6px; }
   .vehicle-gallery__nav,
-  .vehicle-gallery__fullscreen { width: 34px; height: 34px; font-size: 8px; }
+  .vehicle-gallery__fullscreen { width: 18px; height: 18px; font-size: 12px; }
+  .vehicle-gallery__nav { width: 18px; height: 18px; font-size: 12px; }
   .vehicle-gallery__nav--previous { left: 10px; }
   .vehicle-gallery__nav--next { right: 10px; }
-  .vehicle-gallery__nav svg,
-  .vehicle-gallery__fullscreen svg { width: 8px; height: 8px; }
+  .vehicle-gallery__nav svg { width: 12px; height: 12px; }
+  .vehicle-gallery__fullscreen svg { width: 12px; height: 12px; }
   .vehicle-gallery__counter { bottom: 8px; left: 8px; gap: 4px; padding: 4px 6px; font-size: 9px; }
   .vehicle-gallery__counter svg { width: 8px; height: 8px; }
   .vehicle-gallery__fullscreen { right: 8px; bottom: 8px; }
@@ -1525,9 +1563,9 @@
     .contact-field-control--textarea { min-height:108px; }
     .contact-field-control textarea.input { min-height:94px; }
     .contact-form button { width:100%; min-width:0; min-height:56px; font-size:17px; }
-    .contact-map-panel { min-height:260px; grid-template-columns:1fr; }
-    .contact-location-card { align-self:start; width:min(290px,80vw); min-height:100%; padding:23px; }
-    .contact-map { inset:0; width:100%; }
+    .contact-map-panel { min-height:0; grid-template-columns:minmax(0,1fr); grid-template-rows:auto 280px; }
+    .contact-location-card { align-self:stretch; width:100%; min-height:0; padding:23px; }
+    .contact-map { position:relative; inset:auto; display:block; width:100%; height:280px; min-height:280px; margin:0; }
     .contact-lower-grid { grid-template-columns:1fr; gap:24px; }
     .contact-dealership-photo { height:280px; }
     .contact-faq h2 { font-size:2.15rem; }
@@ -1555,8 +1593,8 @@
     .contact-field-control--textarea { min-height:100px; }
     .contact-field-control textarea.input { min-height:86px; }
     .contact-form button { min-height:52px; font-size:16px; }
-    .contact-map-panel { min-height:240px; }
-    .contact-location-card { width:76%; }
+    .contact-map-panel { grid-template-rows:auto 260px; }
+    .contact-map { height:260px; min-height:260px; }
     .contact-dealership-photo { height:230px; }
     .contact-faq h2 { font-size:1.9rem; }
     .contact-faq-list summary { min-height:58px; padding-inline:14px; font-size:14px; }
@@ -2329,6 +2367,37 @@ a[class*="action"] {
 
 img:not([src*="logo"]) { border-radius: 8px; }
 .dealer-hero img { border-radius: 0; }
+
+/* Keep the team specialties clear of the headline and scroll cue at every width. */
+@media (min-width: 1101px) {
+  .team-hero .team-hero-copy { width: min(calc(100% - clamp(40px, 6.4vw, 132px)), 1800px); }
+  .team-hero .team-hero-copy h1,
+  .team-hero .team-hero-copy > p,
+  .team-hero .team-hero-cta { max-width: min(54%, 900px); }
+  .team-hero-specialties { top: 57%; right: clamp(40px, 6.4vw, 132px); width: min(34vw, 540px); }
+  .team-hero-specialties span { padding-block: clamp(10px, 1.15vw, 17px); font-size: clamp(36px, 3.55vw, 62px); }
+}
+
+@media (max-width: 1100px) {
+  .about-hero.team-hero { min-height: 0; height: auto; flex-direction: column; align-items: stretch; justify-content: flex-start; padding-bottom: 34px; }
+  .team-hero .team-hero-copy { width: calc(100% - 64px); padding-block: clamp(28px, 5vh, 54px) 20px; }
+  .team-hero .team-hero-copy h1 { max-width: 100%; }
+  .team-hero .team-hero-copy > p { max-width: 620px; }
+  .team-hero-specialties { position: relative; inset: auto; display: grid; width: calc(100% - 64px); grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 auto; transform: none; }
+  .team-hero-specialties span { display: flex; min-width: 0; min-height: clamp(70px, 11vw, 112px); align-items: center; border-top: 1px solid rgb(245 244 239 / 48%); border-bottom: 1px solid rgb(245 244 239 / 48%); padding: 10px clamp(8px, 2vw, 22px); font-size: clamp(27px, 4.5vw, 48px); overflow-wrap: anywhere; }
+  .team-hero-specialties span + span { border-left: 1px solid rgb(245 244 239 / 48%); }
+}
+
+@media (max-width: 600px) {
+  .about-hero.team-hero { padding-bottom: max(28px, env(safe-area-inset-bottom)); }
+  .team-hero .team-hero-copy { width: calc(100% - 40px); padding-block: 30px 16px; }
+  .team-hero .team-hero-copy h1 { max-width: 100%; margin-bottom: 12px; font-size: clamp(2.75rem, 12vw, 4.25rem); line-height: .92; }
+  .team-hero .team-hero-copy > p { max-width: 420px; margin-bottom: 16px; font-size: 15px; }
+  .team-hero-specialties { width: calc(100% - 40px); }
+  .team-hero-specialties span { min-height: 62px; justify-content: center; padding: 8px 5px; font-size: clamp(18px, 6vw, 27px); text-align: center; }
+  .team-hero .team-hero-cta { width: auto; min-height: 48px; }
+  .team-hero .hero-scroll-cue { display: none; }
+}
 .tractor-guide__photo img { border-radius: 8px; }
 
 .cookie-consent {
@@ -2400,6 +2469,21 @@ img:not([src*="logo"]) { border-radius: 8px; }
   .inventory-results .equipment-card__details { min-height: 48px; gap: 7px; padding-inline: 8px; font-size: 14px; }
   .inventory-results .equipment-card__call { min-height: 48px; gap: 4px; padding-inline: 2px; font-size: 10px; line-height: 1.15; white-space: normal; }
   .inventory-results .equipment-card__call svg { font-size: 13px; }
+
+  .related-equipment-carousel .equipment-card { padding: 10px; }
+  .related-equipment-carousel .equipment-card__body { padding-top: 12px; }
+  .related-equipment-carousel .equipment-card__eyebrow { min-height: 22px; gap: 10px; font-size: 11px; }
+  .related-equipment-carousel .equipment-card__eyebrow i { height: 20px; }
+  .related-equipment-carousel .equipment-card__title h3 { font-size: clamp(20px, 5.5vw, 22px); }
+  .related-equipment-carousel .equipment-card__specs { min-height: 70px; margin-top: 10px; }
+  .related-equipment-carousel .equipment-card__price { font-size: 24px; }
+  .related-equipment-carousel .equipment-card__spec { min-height: 56px; gap: 4px; font-size: 11px; }
+  .related-equipment-carousel .equipment-card__spec svg { font-size: 16px; }
+  .related-equipment-carousel .equipment-card__spec b { font-size: 16px; }
+  .related-equipment-carousel .equipment-card__actions { min-height: 48px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 8px; margin-top: 10px; }
+  .related-equipment-carousel .equipment-card__details { min-height: 48px; gap: 7px; padding-inline: 8px; font-size: 14px; }
+  .related-equipment-carousel .equipment-card__call { min-height: 48px; gap: 4px; padding-inline: 2px; font-size: 10px; line-height: 1.15; white-space: normal; }
+  .related-equipment-carousel .equipment-card__call svg { font-size: 13px; }
 }
 
 @media (max-width: 760px) {

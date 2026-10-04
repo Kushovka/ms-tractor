@@ -53,7 +53,7 @@ export const Footer = () => (
           </a>
           <div className="home-footer-contact__row home-footer-contact__hours">
             <FaClock aria-hidden="true" />
-            <span><strong>Hours</strong><br />Mon-Fri: 8:00 AM–5:00 PM<br />Sat: 8:00 AM–12:00 PM<br />Sun: Closed</span>
+            <span><strong>Hours</strong><br />Mon-Fri: 8:00 AM - 5:00 PM<br />Sat: 8:00 AM - 12:00 PM<br />Sun: Closed</span>
           </div>
         </section>
 
