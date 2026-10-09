@@ -9,25 +9,6 @@ import type { Equipment } from '../types/equipment'
 import { trackContactCta } from '../utils/ctaTracking'
 import { localBusinessSchema } from '../utils/schema'
 
-const StoreSummary = () => (
-  <section id="store-summary" className="store-summary" aria-label="Store hours and contact information">
-    <div className="store-summary__inner">
-      <div className="store-summary__item">
-        <div className="store-summary__item-heading"><FaClock aria-hidden="true" className="store-summary__icon" /><h2>Hours</h2></div>
-        <div className="store-summary__item-content"><p>Mon-Fri: 8:00 AM - 5:00 PM<br />Sat: 8:00 AM - 12:00 PM<br />Sun: Closed</p></div>
-      </div>
-      <a href={business.phoneHref} className="store-summary__item store-summary__item--link" onClick={() => trackContactCta('phone_click', 'Home Summary Call')}>
-        <div className="store-summary__item-heading"><FaPhoneAlt aria-hidden="true" className="store-summary__icon" /><h2>Call Us</h2></div>
-        <div className="store-summary__item-content"><strong>{business.phone}</strong><p>Talk with our team about<br />equipment, parts, and service.</p></div>
-      </a>
-      <a href={business.mapsUrl} target="_blank" rel="noreferrer" className="store-summary__item store-summary__item--link store-summary__visit" onClick={() => trackContactCta('directions_click', 'Home Summary Directions')}>
-        <div className="store-summary__item-heading"><FaMapMarkerAlt aria-hidden="true" className="store-summary__icon store-summary__icon--gold" /><h2>Visit Us</h2></div>
-        <div className="store-summary__item-content"><p>{business.address}<br />{business.cityState} {business.postalCode}</p><span className="store-summary__directions">Get directions <FaArrowRight aria-hidden="true" /></span></div>
-      </a>
-    </div>
-  </section>
-)
-
 export const HomePage = () => {
   const [equipment, setEquipment] = useState<Equipment[]>([])
   const [inventoryLoaded, setInventoryLoaded] = useState(false)
@@ -78,7 +59,6 @@ export const HomePage = () => {
         </div>
       </section>
 
-      <StoreSummary />
       <section id="current-inventory-carousel" className="equipment-inventory" aria-labelledby="equipment-inventory-title">
         <div className="equipment-inventory__heading">
           <h2 id="equipment-inventory-title">Current Inventory</h2>

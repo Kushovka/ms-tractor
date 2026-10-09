@@ -1,13 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router'
 import { FaArrowRight, FaBars, FaMapMarkerAlt, FaPhoneAlt, FaSearch, FaShieldAlt, FaTimes, FaTractor, FaTruck, FaUsers, FaWarehouse } from 'react-icons/fa'
 import { FiChevronRight, FiPhone, FiSearch } from 'react-icons/fi'
-import { listEquipment } from '../api/equipment'
+import { MdFrontLoader } from 'react-icons/md'
+import { TbBackhoe, TbGridDots, TbTractor } from 'react-icons/tb'
 import { business } from '../data/business'
-import type { Equipment } from '../types/equipment'
 import { trackContactCta } from '../utils/ctaTracking'
-import { formatPrice } from '../utils/format'
 
 const desktopNavItems = [
   { label: 'Inventory', href: '/inventory' },
@@ -27,52 +26,37 @@ const mobileNavItems = [
   { label: 'Contact', href: '/contact', Icon: FaPhoneAlt },
 ]
 
+const inventoryCategories = [
+  { label: 'All Equipment', href: '/inventory', Icon: TbGridDots },
+  { label: 'Tractors', href: '/inventory?bodyType=Tractors', Icon: TbTractor },
+  { label: 'Skid Steers', href: '/inventory?bodyType=Skid%20Steers', Icon: MdFrontLoader },
+  { label: 'Backhoes', href: '/inventory?bodyType=Backhoes', Icon: TbBackhoe },
+]
+
 const HeaderSearch = () => {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
-  const [matches, setMatches] = useState<Equipment[]>([])
-  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
+  const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     const term = query.trim()
-    if (term.length < 2) {
-      setMatches([])
-      setLoading(false)
-      return
-    }
-    let cancelled = false
-    setLoading(true)
-    listEquipment({ q: term, pageSize: 3 })
-      .then((response) => { if (!cancelled) setMatches(response.items) })
-      .catch(() => { if (!cancelled) setMatches([]) })
-      .finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
-  }, [query])
-
-  const viewSearch = () => {
-    const term = query.trim()
-    if (term) navigate(`/inventory?q=${encodeURIComponent(term)}`)
+    navigate(term ? `/inventory?q=${encodeURIComponent(term)}` : '/inventory')
   }
 
-  return <div className="header-search relative w-full">
-    <div className="header-search-control flex h-12 items-center overflow-hidden rounded-[10px] bg-[#ebe8e0] px-3.5 transition-colors focus-within:bg-[#e8e5dc]">
-      <label className="relative flex h-full min-w-0 flex-1 items-center gap-3">
+  return (
+    <form role="search" onSubmit={submitSearch} className="header-search-form flex h-12 min-w-0 items-center overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] focus-within:border-[var(--color-primary)]">
+      <label className="flex min-w-0 flex-1 items-center gap-3 px-3.5">
         <span className="sr-only">Search equipment</span>
-        <FaSearch aria-hidden="true" className="shrink-0 text-[14px] text-[var(--color-primary)]" />
-        <input className="h-10 min-w-0 w-full bg-transparent py-0 pr-1 text-[15px] text-[var(--color-text)] outline-none placeholder:text-[#77746e]" type="search" inputMode="search" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); viewSearch() } if (event.key === 'Escape') setQuery('') }} placeholder="Search equipment" />
-        {query ? <button type="button" aria-label="Clear equipment search" onClick={() => setQuery('')} className="grid h-8 w-8 shrink-0 place-items-center text-base text-[var(--color-muted)] transition hover:text-[var(--color-primary)]"><FaTimes aria-hidden="true" /></button> : null}
+        <FaSearch aria-hidden="true" className="h-4 w-4 shrink-0 text-[var(--color-muted)]" />
+        <input type="search" inputMode="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search equipment (e.g. tractor, skid steer...)" className="h-full min-w-0 flex-1 bg-transparent text-[14px] text-[var(--color-text)] outline-none placeholder:text-[var(--color-muted)]" />
       </label>
-      <button type="button" onClick={viewSearch} aria-label="Search inventory" className="header-search-submit grid h-9 w-9 shrink-0 place-items-center text-[var(--color-primary)] transition hover:text-[var(--color-secondary)]"><FiSearch aria-hidden="true" className="h-[18px] w-[18px]" /></button>
-    </div>
-    {query.trim().length >= 2 ? <div className="absolute right-0 top-[calc(100%+0.6rem)] z-50 max-h-[min(480px,calc(100dvh-8rem))] w-[min(620px,calc(100vw-2.5rem))] overflow-y-auto border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] shadow-[0_22px_54px_rgba(23,26,24,0.2)]">
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3.5 sm:px-5"><span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--color-muted)]">{loading ? 'Searching' : `${matches.length} matching listings`}</span><span className="h-2 w-2 bg-[var(--color-accent)]" aria-hidden="true" /></div>
-      {loading ? <p className="px-5 py-6 text-sm text-[var(--color-muted)]">Looking through current inventory…</p> : matches.length ? <><div className="divide-y divide-[var(--color-border)]">{matches.map((item) => <Link key={item.id} to={`/inventory/${item.slug}`} onClick={() => setQuery('')} className="group grid min-h-[84px] grid-cols-[76px_minmax(0,1fr)_auto] items-center gap-3 px-3 py-3 transition-colors hover:bg-[var(--color-hover)] sm:grid-cols-[88px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"><img src={item.images[0]} alt="" className="h-[60px] w-[76px] shrink-0 object-cover sm:h-[66px] sm:w-[88px]" /><span className="min-w-0"><strong className="block truncate text-[14px] font-bold leading-tight sm:text-[16px]">{item.year} {item.make} {item.model}</strong><span className="mt-1 block truncate text-[11px] text-[var(--color-muted)] sm:text-[13px]">{item.trim || 'Available now'}</span></span><span className="flex items-center gap-2 pl-1 text-right"><span className="whitespace-nowrap text-[12px] font-bold tabular-nums text-[var(--color-primary)] sm:text-[14px]">{formatPrice(item.price)}</span><FaArrowRight aria-hidden="true" className="hidden text-[11px] text-[var(--color-muted)] transition group-hover:translate-x-0.5 sm:block" /></span></Link>)}</div><button type="button" onClick={viewSearch} className="flex h-12 w-full items-center justify-between border-t border-[var(--color-border)] px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--color-primary)] transition hover:bg-[var(--color-hover)] sm:px-5"><span>Browse all matching equipment</span><FaArrowRight aria-hidden="true" /></button></> : <p className="px-5 py-6 text-sm text-[var(--color-muted)]">No equipment matches “{query.trim()}”.</p>}
-    </div> : null}
-  </div>
+    </form>
+  )
 }
 
 export const Header = () => {
   const [open, setOpen] = useState(false)
+  const [inventoryMenuOpen, setInventoryMenuOpen] = useState(false)
   const displayPhone = business.phone
 
   return (
@@ -82,20 +66,19 @@ export const Header = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: 'easeOut' }}
     >
-      <div className="mobile-header-layout relative mx-auto grid min-h-[88px] grid-cols-[auto_1fr] items-center gap-5 px-5 sm:min-h-[72px] sm:px-8 min-[1400px]:min-h-[116px] min-[1400px]:grid-cols-[170px_minmax(0,1fr)_300px] min-[1400px]:gap-7 min-[1400px]:px-[clamp(28px,3.2vw,76px)]">
+      <div className="mobile-header-layout relative mx-auto grid min-h-[88px] grid-cols-[auto_1fr] items-center gap-5 px-5 sm:min-h-[72px] sm:px-8 min-[1400px]:min-h-[100px] min-[1400px]:grid-cols-[250px_minmax(0,1fr)_250px] min-[1400px]:gap-7 min-[1400px]:px-[clamp(28px,3.2vw,76px)]">
         <Link to="/" className="mobile-header-logo flex min-w-0 items-center" onClick={() => setOpen(false)}>
-          <img src="/images/ms-tractor-logo.webp" alt="M & S Tractor & Equipment" className="block h-auto w-[120px] shrink-0 sm:w-[166px] min-[1400px]:w-[170px]" />
+          <img src="/images/ms-tractor-logo.webp" alt="M & S Tractor & Equipment" className="block h-auto w-[120px] shrink-0 sm:w-[166px] min-[1400px]:w-[220px]" />
         </Link>
 
-        <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-center gap-[clamp(9px,.85vw,15px)] min-[1400px]:absolute min-[1400px]:left-1/2 min-[1400px]:flex min-[1400px]:-translate-x-1/2">
-          {desktopNavItems.map((item) => (
-            <NavLink key={item.label} to={item.href} className={({ isActive }) => `inline-flex items-center gap-1 whitespace-nowrap font-[var(--font-label)] text-[15px] font-bold uppercase tracking-[.01em] transition-colors ${isActive ? 'text-[var(--color-secondary)]' : 'text-[var(--color-text)] hover:text-[var(--color-secondary)]'}`}>
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="header-search-desktop absolute left-1/2 top-1/2 hidden w-[min(48vw,960px)] -translate-x-1/2 -translate-y-1/2 min-[1400px]:block"><HeaderSearch /></div>
 
-        <div className="hidden min-w-0 min-[1400px]:col-start-3 min-[1400px]:block"><HeaderSearch /></div>
+        <div className="hidden min-w-0 min-[1400px]:col-start-3 min-[1400px]:flex min-[1400px]:items-center min-[1400px]:justify-end">
+          <a href={business.phoneHref} onClick={() => trackContactCta('phone_click', 'Desktop Header Call')} className="desktop-header-call inline-flex shrink-0 items-center gap-2 text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]" aria-label={`Call Now ${business.phone}`}>
+            <FiPhone aria-hidden="true" className="h-[26px] w-[26px] shrink-0 -rotate-[8deg] text-[var(--color-accent)]" />
+            <span className="whitespace-nowrap text-[18px] font-semibold tracking-[-.02em]">{business.phone}</span>
+          </a>
+        </div>
 
         <div className="mobile-header-controls flex h-full items-center justify-self-end gap-2 min-[1400px]:hidden">
           <a href={business.phoneHref} onClick={() => trackContactCta('phone_click', 'Mobile Header Call')} className="mobile-header-call inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-[var(--color-primary)] px-2 text-[11px] font-bold uppercase tracking-[.06em] text-white" aria-label={`Call ${business.phone}`}><FaPhoneAlt aria-hidden="true" /><span>CALL</span></a>
@@ -105,7 +88,31 @@ export const Header = () => {
         </div>
       </div>
 
-      <div className="hidden border-t border-[var(--color-border)] px-5 py-2.5 min-[761px]:block min-[1400px]:hidden sm:px-8"><HeaderSearch /></div>
+      <div className="hidden border-t border-[var(--color-border)] min-[1400px]:block">
+        <div className="mx-auto flex min-h-[62px] items-center justify-center px-[clamp(28px,3.2vw,76px)]">
+          <nav aria-label="Main navigation" className="flex min-w-0 items-center justify-center gap-[clamp(30px,3.4vw,54px)]">
+            {desktopNavItems.map((item) => item.label === 'Inventory' ? (
+              <div key={item.label} className="group relative flex min-h-[40px] items-center" onMouseEnter={() => setInventoryMenuOpen(true)} onMouseLeave={() => setInventoryMenuOpen(false)}>
+                <NavLink to="/inventory" className={({ isActive }) => `inline-flex min-h-[40px] items-center whitespace-nowrap font-[var(--font-label)] text-[18px] font-black uppercase tracking-[.02em] transition-colors ${isActive ? 'text-[var(--color-secondary)]' : 'text-[var(--color-text)] hover:text-[var(--color-secondary)]'}`}>
+                  Inventory
+                </NavLink>
+                <button type="button" aria-label="Show inventory categories" aria-expanded={inventoryMenuOpen} onClick={() => setInventoryMenuOpen((value) => !value)} onFocus={() => setInventoryMenuOpen(true)} className="ml-2 grid h-8 w-7 place-items-center text-[var(--color-muted)] hover:text-[var(--color-secondary)]"><FiChevronRight className={`h-4 w-4 rotate-90 transition-transform ${inventoryMenuOpen ? '-rotate-90' : ''}`} /></button>
+                <div className={`absolute left-0 top-full z-[60] min-w-[260px] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-[0_14px_32px_rgba(20,30,25,.18)] transition duration-150 ${inventoryMenuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0'}`}>
+                  {inventoryCategories.map(({ label, href, Icon }) => <Link key={label} to={href} onClick={() => setInventoryMenuOpen(false)} className="flex min-h-12 items-center gap-3 px-3 text-[15px] font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-secondary)]"><Icon aria-hidden="true" className="h-[18px] w-[18px] shrink-0 text-[var(--color-secondary)]" /><span>{label}</span><FiChevronRight aria-hidden="true" className="ml-auto h-4 w-4 text-[var(--color-muted)]" /></Link>)}
+                </div>
+              </div>
+            ) : (
+              <NavLink key={item.label} to={item.href} className={({ isActive }) => `inline-flex min-h-[40px] items-center whitespace-nowrap font-[var(--font-label)] text-[18px] font-black uppercase tracking-[.02em] transition-colors ${isActive ? 'text-[var(--color-secondary)]' : 'text-[var(--color-text)] hover:text-[var(--color-secondary)]'}`}>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div className="hidden border-t border-[var(--color-border)] px-5 py-2.5 min-[761px]:block min-[1400px]:hidden sm:px-8">
+        <div className="mx-auto w-full max-w-[760px]"><HeaderSearch /></div>
+      </div>
 
       <AnimatePresence>
         {open ? (
